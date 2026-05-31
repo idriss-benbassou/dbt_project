@@ -1,0 +1,13 @@
+version: 2
+
+exposures:
+  - name: dashboard_qlik_commandes
+    type: dashboard
+    maturity: high
+    url: https://url.qlikcloud.com/app/dashboard-clients
+    description: "Suivi des clients et de leurs commandes, consommé par l'équipe CRM."
+    depends_on:
+      - ref('mart_clients_commandes')
+    owner:
+      name: "Equipe BI (PO : <nom_du_po>)" 
+      email: support@email.com
