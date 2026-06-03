@@ -20,25 +20,9 @@ jobs:
 
       - run: pip install dbt-snowflake
 
-      - name: Créer le profiles.yml
-        run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml <<'EOF'
-          dbt_projet:
-            target: ci
-            outputs:
-              ci:
-                type: snowflake
-                account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
-                user: "{{ env_var('SNOWFLAKE_USER') }}"
-                password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-                role: dbt_role
-                warehouse: dbt_wh
-                database: analytics
-                schema: ci
-                threads: 4
-          EOF
+      - name: Verifier que profiles.yml est present
+        run: cat profiles.yml
 
       - run: dbt deps
 
-      - run: dbt build
+      - run: dbt build --profiles-dir .
