@@ -9,6 +9,7 @@ commandes as (
     where statut = 'completed'
 )
 
+-- demo comment
 select
     c.customer_id,
     c.prenom,
