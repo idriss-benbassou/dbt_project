@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: mart_clients_commandes
+    config:
+      access: public
+      contract:
+        enforced: true
+      grants:
+        select: ['bi_role']
+    columns:
+      - name: customer_id
+        data_type: number
+      - name: prenom
+        data_type: varchar
+      - name: nb_commandes
+        data_type: number
+      - name: total_depense
+        data_type: number
+      - name: nom
+        data_type: varchar
+      - name: panier_moyen
+        data_type: number

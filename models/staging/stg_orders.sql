@@ -8,7 +8,8 @@ renamed as (
         customer_id,
         amount      as montant,
         status      as statut,
-        order_date  as date_commande
+        order_date  as date_commande,
+        _loaded_at
     from source
 )
 

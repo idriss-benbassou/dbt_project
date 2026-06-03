@@ -7,7 +7,7 @@ renamed as (
         id          as customer_id,
         first_name  as prenom,
         last_name   as nom,
-        lower(email) as email,
+        {{ clean_email('email') }} as email,
         created_at  as date_creation
     from source
 )

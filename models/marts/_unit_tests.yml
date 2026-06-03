@@ -1,0 +1,15 @@
+unit_tests: 
+  - name: test_panier_moyen
+    model: mart_clients_commandes
+    given:
+      - input: ref('stg_customers')
+        rows:
+          - {customer_id: 2, prenom: 'Sophie'}
+      - input: ref('stg_orders')
+        rows:
+          - {order_id: 1 , customer_id: 2, montant: 100, statut: 'completed'}
+          - {order_id: 2 , customer_id: 2, montant: 50, statut: 'completed'}
+          - {order_id: 3 , customer_id: 2, montant: 30, statut: 'pending'}
+    expect:
+      rows:
+        - {customer_id: 2, nb_commandes: 2, total_depense: 150, panier_moyen: 75}

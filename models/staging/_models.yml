@@ -1,8 +1,16 @@
 version: 2
 
+groups:
+  - name: finance
+    owner:
+      name: Idriss Benbassou
+
 models:
   - name: stg_customers
     description: "Clients nettoyés depuis la source brute. Un client par ligne."
+    config:
+      group: finance
+      access: protected
     columns:
       - name: customer_id
         description: "{{ doc('customer_id') }}"
@@ -16,6 +24,9 @@ models:
 
   - name: stg_orders
     description: "Commandes nettoyées depuis la source brute. Une commande par ligne."
+    config:
+      group: finance
+      access: protected
     columns:
       - name: order_id
         description: "Identifiant unique de la commande."
@@ -36,3 +47,8 @@ models:
           - accepted_values:
               arguments:
                 values: ['completed', 'pending']
+      - name: montant
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
