@@ -11,3 +11,13 @@ dbt_projet:
       database: analytics
       schema: ci
       threads: 4
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: dbt_role
+      warehouse: dbt_wh
+      database: analytics
+      schema: prod
+      threads: 4
