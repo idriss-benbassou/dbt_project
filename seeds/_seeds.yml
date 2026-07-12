@@ -1,0 +1,15 @@
+version: 2
+
+seeds:
+  - name: statuts_commande
+    description: "Référentiel des statuts de commande"
+    columns:
+      - name: statut
+        description: "Code du statut."
+        data_tests:
+          - unique
+          - not_null
+      - name: est_paye
+        description: "Vrai si le statut correspond à une commande payée."
+        data_tests:
+          - not_null

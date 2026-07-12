@@ -1,0 +1,4 @@
+statut,libelle,est_paye
+completed,Terminée,true
+pending,En attente,false
+cancelled,Annulée,false

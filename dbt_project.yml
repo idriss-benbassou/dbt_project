@@ -38,3 +38,11 @@ models:
       +materialized: view
     marts:
       +materialized: table
+
+seeds:
+  dbt_projet:
+    statuts_commande:
+      +column_types:
+        statut: varchar
+        libelle: varchar
+        est_paye: boolean
