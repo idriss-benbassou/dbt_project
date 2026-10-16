@@ -2,11 +2,14 @@ version: 2
 
 sources:
   - name: raw
+    description: "Données brutes chargées telles quelles dans Snowflake (couche Bronze)."
     database: analytics
     schema: raw
     tables:
       - name: customers
+        description: "Clients issus du CRM, une ligne par client."
       - name: orders
+        description: "Commandes, une ligne par commande."
         config:
           loaded_at_field: _loaded_at
           freshness:

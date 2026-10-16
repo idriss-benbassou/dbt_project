@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: mart_clients_commandes
+    description: "Une ligne par client avec ses commandes payées. Consommé par le tableau de bord Qlik."
     config:
       access: public
       contract:
@@ -10,14 +11,98 @@ models:
         select: ['bi_role']
     columns:
       - name: customer_id
+        description: "{{ doc('customer_id') }}"
         data_type: number
+        data_tests:
+          - unique
+          - not_null
       - name: prenom
+        description: "Prénom du client."
+        data_type: varchar
+      - name: nom
+        description: "Nom du client."
         data_type: varchar
       - name: nb_commandes
+        description: "Nombre de commandes payées."
         data_type: number
       - name: total_depense
+        description: "Somme des montants des commandes payées."
         data_type: number
-      - name: nom
-        data_type: varchar
       - name: panier_moyen
+        description: "total_depense divisé par nb_commandes, vide si le client n'a aucune commande payée."
         data_type: number
+
+  - name: mart_clients_commandes_status
+    description: "Une ligne par client avec le nombre de commandes pour chaque statut du seed statuts_commande."
+    columns:
+      - name: customer_id
+        description: "{{ doc('customer_id') }}"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: mart_orders
+    description: "Une ligne par commande, chargée en incrémental."
+    columns:
+      - name: order_key
+        description: "Clé de substitution de la commande, générée avec dbt_utils. Sert de clé unique au MERGE."
+        data_tests:
+          - unique
+          - not_null
+
+  - name: mart_orders_enrichi
+    description: "Une ligne par commande, avec le libellé du statut. Porte le Semantic Layer du projet."
+    # Semantic Layer : les indicateurs sont définis une seule fois ici,
+    # et chaque outil qui les interroge obtient le même chiffre.
+    semantic_model:
+      enabled: true
+    agg_time_dimension: date_commande
+    columns:
+      - name: order_id
+        description: "Identifiant unique de la commande."
+        entity:
+          type: primary
+          name: commande
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "{{ doc('customer_id') }}"
+        entity:
+          type: foreign
+          name: client
+      - name: date_commande
+        description: "Date de la commande."
+        granularity: day
+        dimension:
+          type: time
+      - name: statut_libelle
+        description: "Libellé du statut, issu du seed statuts_commande."
+        dimension:
+          type: categorical
+      - name: est_paye
+        description: "Vrai si la commande est payée, selon le seed statuts_commande."
+        dimension:
+          type: categorical
+    metrics:
+      - name: nb_commandes
+        description: "Nombre de commandes payées."
+        type: simple
+        agg: count
+        expr: order_id
+        filter: "{{ Dimension('commande__est_paye') }} = true"
+      - name: chiffre_affaires
+        description: "Somme des montants des commandes payées."
+        type: simple
+        agg: sum
+        expr: montant
+        filter: "{{ Dimension('commande__est_paye') }} = true"
+
+# Une métrique ratio combine deux métriques déjà définies.
+# Le panier moyen se calcule donc toujours de la même façon, quel que soit l'outil.
+metrics:
+  - name: panier_moyen
+    description: "Chiffre d'affaires divisé par le nombre de commandes payées."
+    type: ratio
+    numerator: chiffre_affaires
+    denominator: nb_commandes

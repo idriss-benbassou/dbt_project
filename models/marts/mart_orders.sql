@@ -1,6 +1,8 @@
 {{ config(
     materialized='incremental',
-    unique_key='order_id'
+    incremental_strategy='merge',
+    unique_key='order_key',
+    on_schema_change='append_new_columns'
 ) }}
 
 select
@@ -15,7 +17,9 @@ from {{ ref('stg_orders') }}
 
 {% if is_incremental() %}
 
-  -- ce filtre ne s'applique QUE aux runs incrémentaux
-  where _loaded_at > (select max(_loaded_at) from {{ this }})
+  -- ce filtre ne s'applique QUE aux runs incrémentaux.
+  -- >= plutôt que > : une ligne arrivée au même horodatage que le dernier run
+  -- n'est pas perdue, et le MERGE sur order_key évite les doublons.
+  where _loaded_at >= (select max(_loaded_at) from {{ this }})
 
 {% endif %}

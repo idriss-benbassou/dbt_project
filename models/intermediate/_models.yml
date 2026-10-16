@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: int_commandes_enrichies
+    description: "Une ligne par commande, avec le libellé du statut et l'indicateur est_paye issus du seed statuts_commande. Ce qu'est une commande payée se décide ici, une seule fois."
+    columns:
+      - name: order_id
+        description: "Identifiant unique de la commande."
+        data_tests:
+          - unique
+          - not_null
+      - name: est_paye
+        description: "Vrai si la commande est payée, selon le seed statuts_commande."
+        data_tests:
+          - not_null

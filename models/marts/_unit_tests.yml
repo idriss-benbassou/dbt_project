@@ -1,15 +1,17 @@
-unit_tests: 
+unit_tests:
   - name: test_panier_moyen
     model: mart_clients_commandes
     given:
       - input: ref('stg_customers')
         rows:
           - {customer_id: 2, prenom: 'Sophie'}
-      - input: ref('stg_orders')
+      # Les commandes arrivent maintenant de la couche intermédiaire :
+      # la règle à protéger est "seules les commandes payées comptent".
+      - input: ref('int_commandes_enrichies')
         rows:
-          - {order_id: 1 , customer_id: 2, montant: 100, statut: 'completed'}
-          - {order_id: 2 , customer_id: 2, montant: 50, statut: 'completed'}
-          - {order_id: 3 , customer_id: 2, montant: 30, statut: 'pending'}
+          - {order_id: 1, customer_id: 2, montant: 100, est_paye: true}
+          - {order_id: 2, customer_id: 2, montant: 50, est_paye: true}
+          - {order_id: 3, customer_id: 2, montant: 30, est_paye: false}
     expect:
       rows:
         - {customer_id: 2, nb_commandes: 2, total_depense: 150, panier_moyen: 75}

@@ -1,11 +1,26 @@
+# Aucun secret dans ce fichier : tout passe par des variables d'environnement.
+# Authentification par paire de clés (module 2) : Snowflake n'accepte plus
+# le mot de passe seul pour un utilisateur de service comme celui de la CI.
 dbt_projet:
-  target: ci
+  target: dev
   outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE') }}"
+      role: dbt_role
+      warehouse: dbt_wh
+      database: analytics
+      schema: dev
+      threads: 4
     ci:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE') }}"
       role: dbt_role
       warehouse: dbt_wh
       database: analytics
@@ -15,9 +30,10 @@ dbt_projet:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE') }}"
       role: dbt_role
       warehouse: dbt_wh
       database: analytics
       schema: prod
-      threads: 4
+      threads: 8

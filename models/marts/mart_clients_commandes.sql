@@ -1,15 +1,12 @@
-{{ config(materialized='table') }}
-
 with clients as (
     select * from {{ ref('stg_customers') }}
 ),
 
 commandes as (
-    select * from {{ ref('stg_orders') }}
-    where statut = 'completed'
+    select * from {{ ref('int_commandes_enrichies') }}
+    where est_paye   -- on ne compte que les commandes payées, selon le seed statuts_commande
 )
 
--- demo comment
 select
     c.customer_id,
     c.prenom,

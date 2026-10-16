@@ -1,5 +1,10 @@
-
 target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+
+# Manifest de prod téléchargé par la CI
+prod-artifacts/
+
+# Clés privées Snowflake : jamais dans Git
+*.p8

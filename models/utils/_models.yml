@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: metricflow_time_spine
+    description: "Calendrier du Semantic Layer, une ligne par jour de 2025 à 2027."
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        description: "Le jour."
+        granularity: day
+        data_tests:
+          - unique
+          - not_null

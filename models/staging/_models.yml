@@ -42,13 +42,20 @@ models:
                 to: ref('stg_customers')
                 field: customer_id
       - name: statut
-        description: "Statut de la commande : completed ou pending."
+        description: "Statut de la commande. La liste des statuts autorisés vit dans le seed statuts_commande."
         data_tests:
-          - accepted_values:
+          # Le seed est la seule référence des statuts (module 7) :
+          # il remplace la liste écrite en dur dans accepted_values (module 5).
+          - relationships:
               arguments:
-                values: ['completed', 'pending']
+                to: ref('statuts_commande')
+                field: statut
       - name: montant
+        description: "Montant de la commande en euros, toujours strictement positif."
         data_tests:
+          # Même règle que le test singulier tests/assert_montant_positif.sql,
+          # écrite en une ligne grâce à dbt_utils (module 12).
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
+                inclusive: false

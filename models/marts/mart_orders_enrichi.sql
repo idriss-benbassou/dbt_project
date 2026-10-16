@@ -1,18 +1,11 @@
-with commandes as (
-    select * from {{ ref('stg_orders') }}
-),
-
-statuts as (
-    select * from {{ ref('statuts_commande') }}
-)
-
+-- La jointure avec les statuts est faite dans la couche intermédiaire.
+-- Le mart expose le résultat aux outils de restitution et au Semantic Layer.
 select
-    c.order_id,
-    c.customer_id,
-    c.montant,
-    c.statut,
-    s.libelle   as statut_libelle,
-    s.est_paye
-from commandes c
-left join statuts s
-    on c.statut = s.statut
+    order_id,
+    customer_id,
+    montant,
+    statut,
+    statut_libelle,
+    est_paye,
+    date_commande
+from {{ ref('int_commandes_enrichies') }}
